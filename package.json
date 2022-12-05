@@ -14,6 +14,7 @@
   "dependencies": {
     "@antfu/utils": "^0.7.2",
     "moment": "^2.29.4",
+    "node-schedule": "^2.1.0",
     "playwright": "^1.27.1"
   }
 }
