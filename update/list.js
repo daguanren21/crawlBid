@@ -14,7 +14,7 @@ let currentPage = 1
 
 // }
 export async function GetBidList(page) {
-    let currentDate = moment(new Date()).format('YYYY-MM-DD')
+    let currentDate = moment(new Date()).subtract(1, "days").format('YYYY-MM-DD')
     if (currentPage === 1) {
         try {
             await page.goto(`https://search.bidcenter.com.cn/search?keywords=${searchText}&type=${bidType}`)
@@ -24,6 +24,17 @@ export async function GetBidList(page) {
             await GetBidList(page)
         }
     }
+    let allData = await page.$$eval('#searchListArea>.ssjg-list_cell', (elements) => {
+        return elements.filter(v => v.querySelector('input[type="checkbox"]'))
+            .map(element => {
+                //获取
+                let id = element.querySelector('input[type="checkbox"]').value
+                return {
+                    id,
+                }
+
+            });
+    });
     const data = await page.$$eval('#searchListArea>.ssjg-list_cell', (elements, currentDate) => {
         return elements.filter(v => v.querySelector('input[type="checkbox"]'))
             .filter(v => v.querySelector('.ssjg-list_body>.ssjg-list_foot .ssjg-shijian').innerText === currentDate)
@@ -57,7 +68,10 @@ export async function GetBidList(page) {
         data[index] = { ...detail, ...data[index] }
     }
     totalBidList.push(...data)
-    if (data.length == 40) {
+    if (allData.length === 0 || data.length === 0) {
+        return Promise.resolve(true)
+    }
+    if (allData[allData.length - 1].id === data[data.length - 1].id) {
         currentPage++
         try {
             await page.goto(`https://search.bidcenter.com.cn/search?keywords=${searchText}&type=${bidType}&mod=0&page=${currentPage}`)

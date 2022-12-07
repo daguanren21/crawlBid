@@ -30,7 +30,7 @@ async function getBidListJob() {
     await page.screenshot({ path: 'screenShot/main_search.png' })
     try {
         await GetBidList(page)
-        // console.log(totalBidList)
+        console.log(totalBidList)
         await browser.close()
     } catch (error) {
         return Promise.reject(error)

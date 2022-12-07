@@ -1,17 +1,21 @@
-const lxrReg = new RegExp(/采购经办人：|联系人：|联 系 人：|项目联系人及联系方式：/g)
-const lxrDhReg = new RegExp(/电话：|联系方式：/g)
+const lxrReg = new RegExp(/^采购经办人：|^联系人：|^联 系 人：|^项目联系人及联系方式：/g)
+const lxrDhReg = new RegExp(/^电话：|^联系方式：|^联系电话：|^采购联系电话：/g)
+const bhReg = new RegExp(/项目编号：|招标编号：/g)
 const getPhoneNumber = /1[3456789]\d{9}|\d{3,}-\d{7,}/g
 const getName = /[\u4e00-\u9fa5]{2,4}/g
+
 export async function GetBidDetail(page, url) {
     //跳转详情页面
     try {
         await page.goto(url)
         await page.waitForSelector('.detail_title')
+
     } catch {
         await GetBidDetail(page, url)
     }
 
     // await retryDetailPage(page)
+    await page.waitForTimeout(60000)//等待两分钟
 
     //获取采购单位
     let dw = await page.$eval('.gonggaoxinxi #yezhu', el => el.innerText);
@@ -22,29 +26,32 @@ export async function GetBidDetail(page, url) {
     //获取项目编号
     await page.locator()
     const iframe = await page.frameLocator('#detailiframe')
-    const content = await iframe.locator('#content>div')
+    // 常规情况
+    const content = await iframe.locator('#content')
     let bh = '',
         lxr = '',
         lxdh = '';
 
     try {
-        bh = await content.locator('p', { hasText: '项目编号：' }).innerText()
+        bh = await content.locator('p,br,td', { hasText: bhReg }).innerText()
     } catch (error) {
     }
     try {
-        lxr = await content.locator('p', { hasText: lxrReg }).first().innerText()
+        lxr = await content.locator('p,br,td', { hasText: lxrReg }).first().innerText()
     } catch (error) {
 
     }
     try {
-        lxdh = await content.locator('p', { hasText: lxrDhReg }).first().innerText()
+        lxdh = await content.locator('p,br,td', { hasText: lxrDhReg }).first().innerText()
     } catch (error) {
     }
     let phone = lxdh.match(getPhoneNumber) || lxr.match(getPhoneNumber)
     let name = lxr.match(getName) || lxdh.match(getName)
+    let projectNumber = bh?.split('：')[1]
     console.log({
         "联系电话": phone ? phone[0] : '',
         "联系人": name ? name[1] : '',
+        "项目编号": projectNumber
     })
     //获取联系人
     //获取联系方式
@@ -52,7 +59,7 @@ export async function GetBidDetail(page, url) {
 
 
     return Promise.resolve({
-        dw, agent, endTime, bh, lxr, lxdh, source: '采招网'
+        dw, agent, endTime, bh: projectNumber, lxr: name ? name[1] : '', lxdh: phone ? phone[0] : '', source: '采招网'
     })
 
 }
