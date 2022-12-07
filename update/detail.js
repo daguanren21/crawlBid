@@ -1,7 +1,9 @@
-const lxrReg = new RegExp(/^采购经办人：|^联系人：|^联 系 人：|^项目联系人及联系方式：/g)
-const lxrDhReg = new RegExp(/^电话：|^联系方式：|^联系电话：|^采购联系电话：/g)
+import { firstName } from "../utils/constants.js"
+
+const lxrReg = new RegExp(/采购经办人|项目联系人（询问）|项目联系人|联系人|联 系 人|项目联系人及联系方式/g)
+const lxrDhReg = new RegExp(/电话|电　话|项目联系方式（询问）|联系方式|联系电话|采购联系电话/g)
 const bhReg = new RegExp(/项目编号：|招标编号：/g)
-const getPhoneNumber = /1[3456789]\d{9}|\d{3,}-\d{7,}/g
+const getPhoneNumber = /1[3456789]\d{9}|\d{3,}-\d{7,}[-\d{3,}]*/g
 const getName = /[\u4e00-\u9fa5]{2,4}/g
 
 export async function GetBidDetail(page, url) {
@@ -13,9 +15,6 @@ export async function GetBidDetail(page, url) {
     } catch {
         await GetBidDetail(page, url)
     }
-
-    // await retryDetailPage(page)
-    await page.waitForTimeout(60000)//等待两分钟
 
     //获取采购单位
     let dw = await page.$eval('.gonggaoxinxi #yezhu', el => el.innerText);
@@ -33,33 +32,39 @@ export async function GetBidDetail(page, url) {
         lxdh = '';
 
     try {
-        bh = await content.locator('p,br,td', { hasText: bhReg }).innerText()
+        bh = await content.locator('p,tr,li', { hasText: bhReg }).innerText()
     } catch (error) {
     }
     try {
-        lxr = await content.locator('p,br,td', { hasText: lxrReg }).first().innerText()
+        lxr = await content.locator('p,tr,li', { hasText: lxrReg }).first().innerText()
     } catch (error) {
 
     }
     try {
-        lxdh = await content.locator('p,br,td', { hasText: lxrDhReg }).first().innerText()
+        lxdh = await content.locator('p,tr,li', { hasText: lxrDhReg }).first().innerText()
     } catch (error) {
     }
     let phone = lxdh.match(getPhoneNumber) || lxr.match(getPhoneNumber)
     let name = lxr.match(getName) || lxdh.match(getName)
+
     let projectNumber = bh?.split('：')[1]
+    if (projectNumber && projectNumber.indexOf('\n') !== -1) {
+        projectNumber = projectNumber.split('\n')[0]
+    }
+    name && (name = name.filter(v => firstName.includes(v[0])))
     console.log({
+        "截取前联系人": name,
+        "截取前联系方式": phone,
         "联系电话": phone ? phone[0] : '',
-        "联系人": name ? name[1] : '',
+        "联系人": name ? name[name.length - 1] : '',
         "项目编号": projectNumber
     })
     //获取联系人
     //获取联系方式
     //获取项目阶段
-
-
+    await page.waitForTimeout(60000)//等待1分钟
     return Promise.resolve({
-        dw, agent, endTime, bh: projectNumber, lxr: name ? name[1] : '', lxdh: phone ? phone[0] : '', source: '采招网'
+        dw, agent, endTime, bh: projectNumber || '', lxr: name ? name[name.length - 1] : '', lxdh: phone ? phone[0] : '', source: '采招网'
     })
 
 }

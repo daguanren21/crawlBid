@@ -62,11 +62,11 @@ export async function GetBidList(page) {
 
             });
     }, currentDate);
-    for (let index = 0; index < data.length; index++) {
-        const url = data[index].url;
-        let detail = await GetBidDetail(page, url)
-        data[index] = { ...detail, ...data[index] }
-    }
+    // for (let index = 0; index < data.length; index++) {
+    //     const url = data[index].url;
+    //     let detail = await GetBidDetail(page, url)
+    //     data[index] = { ...detail, ...data[index] }
+    // }
     totalBidList.push(...data)
     if (allData.length === 0 || data.length === 0) {
         return Promise.resolve(true)
