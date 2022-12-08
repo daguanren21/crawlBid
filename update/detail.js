@@ -1,5 +1,4 @@
-import { firstName } from "../utils/constants.js"
-
+const { firstName } = require('../utils/constants.js')
 const lxrReg = new RegExp(/采购经办人|项目联系人（询问）|项目联系人|联系人|联 系 人|项目联系人及联系方式/g)
 const lxrDhReg = new RegExp(/电话|电　话|项目联系方式（询问）|联系方式|联系电话|采购联系电话/g)
 const bhReg = new RegExp(/项目编号：|招标编号：/g)

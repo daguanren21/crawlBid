@@ -1,17 +1,17 @@
 //配置搜索条件
-export const searchText = "AED，除颤仪";
+const searchText = "AED，除颤仪";
 //配置账号密码
-export const user = {
+const user = {
     userName: '13917961109',
     password: 'sf784sf'
 }
 //信息类型
-export const bidType = "1,2,6"
+const bidType = "1,2,6"
 
-export let totalBidList = [];
-export let currentPage = 1;
+let totalBidList = [];
+let currentPage = 1;
 
-export const firstName = ["赵", "钱", "孙",
+const firstName = ["赵", "钱", "孙",
     "李", "周", "吴", "郑", "王", "冯",
     "陈", "褚", "卫", "蒋", "沈", "韩", "杨", "朱", "秦", "尤", "许",
     "何", "吕", "施", "张", "孔", "曹", "严", "华", "金", "魏", "陶",
@@ -96,3 +96,11 @@ export const firstName = ["赵", "钱", "孙",
     "公西", "巫马", "端木", "颛孙", "子车", "督", "仉", "司寇", "亓官", "鲜于", "锺离", "盖", "逯",
     "库", "郏", "逢", "阴", "薄", "厉", "稽", "闾丘", "公良", "段干", "开", "光", "操", "瑞", "眭",
     "泥", "运", "摩", "伟", "铁", "迮"]
+module.exports ={
+    searchText,
+    user,
+    bidType,
+    totalBidList,
+    currentPage,
+    firstName
+}

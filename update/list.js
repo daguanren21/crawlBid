@@ -1,6 +1,5 @@
-import { GetBidDetail } from "./detail.js";
-import { totalBidList, bidType, searchText } from '../utils/constants.js';
-import moment from 'moment';
+const { totalBidList, bidType, searchText } = require('../utils/constants.js');
+const moment = require('moment');
 let currentPage = 1
 // async function retryNavagateFn(page, url) {
 //     try {
@@ -13,8 +12,9 @@ let currentPage = 1
 //     }
 
 // }
-export async function GetBidList(page) {
-    let currentDate = moment(new Date()).subtract(1, "days").format('YYYY-MM-DD')
+async function GetBidList(page) {
+    // .subtract(1, "days")
+    let currentDate = moment(new Date()).format('YYYY-MM-DD')
     if (currentPage === 1) {
         try {
             await page.goto(`https://search.bidcenter.com.cn/search?keywords=${searchText}&type=${bidType}`)
@@ -87,4 +87,8 @@ export async function GetBidList(page) {
 
     //     await page.locator('.layui-laypage-next').click()
 
+}
+
+module.exports = {
+    GetBidList,
 }
