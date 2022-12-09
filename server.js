@@ -81,7 +81,7 @@ if (cluster.isMaster) {
 
     schedule.scheduleJob(id, '30 * * * * *', async () => {
         try {
-
+        
         } catch (error) {
             console.error("定时任务执行失败", error)
         }

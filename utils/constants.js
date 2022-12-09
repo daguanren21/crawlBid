@@ -2,8 +2,8 @@
 const searchText = "AED，除颤仪";
 //配置账号密码
 const user = {
-    userName: '13917961109',
-    password: 'sf784sf'
+    userName: '',
+    password: ''
 }
 //信息类型
 const bidType = "1,2,6"
