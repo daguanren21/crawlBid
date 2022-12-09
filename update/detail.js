@@ -5,7 +5,7 @@ const bhReg = new RegExp(/项目编号：|招标编号：/g)
 const getPhoneNumber = /1[3456789]\d{9}|\d{3,}-\d{7,}[-\d{3,}]*/g
 const getName = /[\u4e00-\u9fa5]{2,4}/g
 
-export async function GetBidDetail(page, url) {
+async function GetBidDetail(page, url) {
     //跳转详情页面
     try {
         await page.goto(url)
@@ -37,7 +37,7 @@ export async function GetBidDetail(page, url) {
     try {
         lxr = await content.locator('p,tr,li', { hasText: lxrReg }).first().innerText()
     } catch (error) {
-
+        
     }
     try {
         lxdh = await content.locator('p,tr,li', { hasText: lxrDhReg }).first().innerText()
@@ -61,7 +61,7 @@ export async function GetBidDetail(page, url) {
     //获取联系人
     //获取联系方式
     //获取项目阶段
-    await page.waitForTimeout(60000)//等待1分钟
+    await page.waitForTimeout(40000)//等待1分钟
     return Promise.resolve({
         dw, agent, endTime, bh: projectNumber || '', lxr: name ? name[name.length - 1] : '', lxdh: phone ? phone[0] : '', source: '采招网'
     })
@@ -133,4 +133,8 @@ function get_track(distance) {
         track.push(Math.round(move))
     }
     return track.filter(v => v !== 0)
+}
+
+module.exports = {
+    GetBidDetail
 }

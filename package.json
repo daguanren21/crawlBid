@@ -12,10 +12,12 @@
   "type": "commonjs",
   "dependencies": {
     "@antfu/utils": "^0.7.2",
+    "cache-storage": "^2.0.1",
     "chinese-surnames": "^1.0.0",
     "cluster": "^0.7.7",
     "moment": "^2.29.4",
     "node-schedule": "^2.1.0",
+    "node-xlsx": "^0.21.0",
     "playwright": "^1.27.1"
   }
 }
